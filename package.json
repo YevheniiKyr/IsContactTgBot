@@ -26,6 +26,6 @@
     "vosk": "^0.3.39"
   },
   "devDependencies": {
-    "@types/node-telegram-bot-api": "^0.64.9",
+    "@types/node-telegram-bot-api": "^0.64.9"
   }
 }
