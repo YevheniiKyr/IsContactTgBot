@@ -411,45 +411,45 @@ async function sendVoice(text: string, speedUp: number, chatId: number) {
 }
 
 //переклад войсу в текст
-bot.on('voice', async (msg) => {
-    const chatId: number = msg.chat.id;
-    const fileId: string = msg.voice.file_id;
-    try {
-        // Отримуємо посилання на файл
-        const fileLink: string = await bot.getFileLink(fileId);
-        const oggPath = 'voice.ogg';
-        const wavPath = 'voice.wav';
-        // Завантажуємо голосове повідомлення
-        const response = await axios.get(fileLink, { responseType: 'arraybuffer' });
-        fs.writeFileSync(oggPath, response.data);
-        // Конвертуємо .ogg у .wav (16kHz, моно)
-        await new Promise((resolve, reject) => {
-            ffmpeg(oggPath)
-                .toFormat('wav')
-                .audioFrequency(16000)
-                .audioChannels(1)
-                .on('end', resolve)
-                .on('error', reject)
-                .save(wavPath);
-        });
-        // Виконуємо розпізнавання мови через Vosk
-        const rec = new Recognizer({ model: model, sampleRate: 16000 });
-        const audioData: Buffer = fs.readFileSync(wavPath);
-        rec.acceptWaveform(audioData);
-        const result: string = rec.result().text
-        let text: string = ''
-        if(result) text = result
-            else text = 'Не вдалося розпізнати голос.'
-        // Відповідаємо користувачу його текстом
-        await bot.sendMessage(chatId, text, {reply_to_message_id: msg.message_id});
-        // Видаляємо тимчасові файли
-        fs.unlinkSync(oggPath);
-        fs.unlinkSync(wavPath);
-    } catch (error) {
-        console.error(error);
-        await bot.sendMessage(chatId, 'Помилка розпізнавання голосу.');
-    }
-});
+// bot.on('voice', async (msg) => {
+//     const chatId: number = msg.chat.id;
+//     const fileId: string = msg.voice.file_id;
+//     try {
+//         // Отримуємо посилання на файл
+//         const fileLink: string = await bot.getFileLink(fileId);
+//         const oggPath = 'voice.ogg';
+//         const wavPath = 'voice.wav';
+//         // Завантажуємо голосове повідомлення
+//         const response = await axios.get(fileLink, { responseType: 'arraybuffer' });
+//         fs.writeFileSync(oggPath, response.data);
+//         // Конвертуємо .ogg у .wav (16kHz, моно)
+//         await new Promise((resolve, reject) => {
+//             ffmpeg(oggPath)
+//                 .toFormat('wav')
+//                 .audioFrequency(16000)
+//                 .audioChannels(1)
+//                 .on('end', resolve)
+//                 .on('error', reject)
+//                 .save(wavPath);
+//         });
+//         // Виконуємо розпізнавання мови через Vosk
+//         const rec = new Recognizer({ model: model, sampleRate: 16000 });
+//         const audioData: Buffer = fs.readFileSync(wavPath);
+//         rec.acceptWaveform(audioData);
+//         const result: string = rec.result().text
+//         let text: string = ''
+//         if(result) text = result
+//             else text = 'Не вдалося розпізнати голос.'
+//         // Відповідаємо користувачу його текстом
+//         await bot.sendMessage(chatId, text, {reply_to_message_id: msg.message_id});
+//         // Видаляємо тимчасові файли
+//         fs.unlinkSync(oggPath);
+//         fs.unlinkSync(wavPath);
+//     } catch (error) {
+//         console.error(error);
+//         await bot.sendMessage(chatId, 'Помилка розпізнавання голосу.');
+//     }
+// });
 
 
 
