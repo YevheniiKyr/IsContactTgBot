@@ -2,14 +2,14 @@ import {ChatGameMap, GameState, JokeAndTranslatedJoke, Role, UserChatMap, UserRo
 import axios from 'axios';
 const googleTTS = require('google-tts-api');
 import fs from "fs";
-import ffmpeg from "fluent-ffmpeg";
-import ffmpegPath from "ffmpeg-static";
+// import ffmpeg from "fluent-ffmpeg";
+// import ffmpegPath from "ffmpeg-static";
 import {Model, Recognizer} from 'vosk';
 import TelegramBot, {ChatMember, Message} from "node-telegram-bot-api";
 
 require('dotenv').config();
 
-if(ffmpegPath) ffmpeg.setFfmpegPath(ffmpegPath);
+// if(ffmpegPath) ffmpeg.setFfmpegPath(ffmpegPath);
 const token: string | undefined = process.env.TELEGRAM_TOKEN;
 const bot: TelegramBot = new TelegramBot(token, {polling: true});
 const VOSK_MODEL_PATH = 'D:/vosk-model-small-uk-v3-small/vosk-model-small-uk-v3-small';
@@ -273,35 +273,35 @@ bot.on('message', async message => {
         if (!messageText) return
 
         //жарт
-        if (messageText.toLowerCase() === "хочу жарт") {
-            const {joke, translatedJoke} = await getJoke()
-            if (joke) {
-                await bot.sendMessage(chatId, joke);
-            }
-            if (translatedJoke) {
-                await bot.sendMessage(chatId, translatedJoke);
-                await sendVoice(translatedJoke, 1.3, chatId);
-            }
-            return
-        }
-
-        //жарт про Платона
-        if (messageText.toLowerCase() === "ти часом не душніла?") {
-            const platonJokeChunk1 = "" +
-                "Якось Платон сказав: \"Людина — це тварина на двох ногах, позбавлена пір'я.\"\n" +
-                "Це почув Діоген, обскуб півня і показав Платону:\n" +
-                "— Ось тобі платонівська людина!\n";
-            const platonJokeChunk2 = "Платон відповів:\n" +
-                "— Бля, ну ти й душніла йобаний!!!\n" +
-                "І розніс Діогену хату. 😆";
-            if (message.reply_to_message) {
-                const repliedUser = message.reply_to_message.from;
-                const jokeStart = `${repliedUser.first_name}, я відповім тобі на це моїм улюбленим анекдотом.`
-                await sendVoice(jokeStart, 1.5, chatId);
-                await sendVoice(platonJokeChunk1, 1.7, chatId);
-                return await sendVoice(platonJokeChunk2, 1.7, chatId);
-            }
-        }
+        // if (messageText.toLowerCase() === "хочу жарт") {
+        //     const {joke, translatedJoke} = await getJoke()
+        //     if (joke) {
+        //         await bot.sendMessage(chatId, joke);
+        //     }
+        //     if (translatedJoke) {
+        //         await bot.sendMessage(chatId, translatedJoke);
+        //         await sendVoice(translatedJoke, 1.3, chatId);
+        //     }
+        //     return
+        // }
+        //
+        // //жарт про Платона
+        // if (messageText.toLowerCase() === "ти часом не душніла?") {
+        //     const platonJokeChunk1 = "" +
+        //         "Якось Платон сказав: \"Людина — це тварина на двох ногах, позбавлена пір'я.\"\n" +
+        //         "Це почув Діоген, обскуб півня і показав Платону:\n" +
+        //         "— Ось тобі платонівська людина!\n";
+        //     const platonJokeChunk2 = "Платон відповів:\n" +
+        //         "— Бля, ну ти й душніла йобаний!!!\n" +
+        //         "І розніс Діогену хату. 😆";
+        //     if (message.reply_to_message) {
+        //         const repliedUser = message.reply_to_message.from;
+        //         const jokeStart = `${repliedUser.first_name}, я відповім тобі на це моїм улюбленим анекдотом.`
+        //         await sendVoice(jokeStart, 1.5, chatId);
+        //         await sendVoice(platonJokeChunk1, 1.7, chatId);
+        //         return await sendVoice(platonJokeChunk2, 1.7, chatId);
+        //     }
+        // }
 
         //приватний чат
         if (isPrivate) {
@@ -379,36 +379,36 @@ async function translateText(text: string) {
     }
 }
 
-async function sendVoice(text: string, speedUp: number, chatId: number) {
-    try {
-        const url: string = googleTTS.getAudioUrl(text, {
-            lang: "uk",
-            slow: false,
-            host: "https://translate.google.com",
-        });
-        console.log(url)
-        const response = await axios.get(url, {responseType: "arraybuffer"});
-        const mp3Path = "joke.mp3";
-        fs.writeFileSync(mp3Path, response.data);
-        const fastMp3Path = "joke_fast.mp3";
-        // Прискорюємо аудіо на 30%
-        await new Promise((resolve, reject) => {
-            ffmpeg(mp3Path)
-                .audioFilter(`atempo=${speedUp}`) // 1.3 = +30% швидкості
-                .on("end", resolve)
-                .on("error", reject)
-                .save(fastMp3Path);
-        });
-        // Відправляємо оброблене аудіо
-        await bot.sendVoice(chatId, fastMp3Path);
-        // Видаляємо тимчасові файли
-        fs.unlinkSync(mp3Path);
-        fs.unlinkSync(fastMp3Path);
-        console.log("Відправлено голосове повідомлення!");
-    } catch (error) {
-        console.error("Помилка створення аудіо:", error);
-    }
-}
+// async function sendVoice(text: string, speedUp: number, chatId: number) {
+//     try {
+//         const url: string = googleTTS.getAudioUrl(text, {
+//             lang: "uk",
+//             slow: false,
+//             host: "https://translate.google.com",
+//         });
+//         console.log(url)
+//         const response = await axios.get(url, {responseType: "arraybuffer"});
+//         const mp3Path = "joke.mp3";
+//         fs.writeFileSync(mp3Path, response.data);
+//         const fastMp3Path = "joke_fast.mp3";
+//         // Прискорюємо аудіо на 30%
+//         await new Promise((resolve, reject) => {
+//             ffmpeg(mp3Path)
+//                 .audioFilter(`atempo=${speedUp}`) // 1.3 = +30% швидкості
+//                 .on("end", resolve)
+//                 .on("error", reject)
+//                 .save(fastMp3Path);
+//         });
+//         // Відправляємо оброблене аудіо
+//         await bot.sendVoice(chatId, fastMp3Path);
+//         // Видаляємо тимчасові файли
+//         fs.unlinkSync(mp3Path);
+//         fs.unlinkSync(fastMp3Path);
+//         console.log("Відправлено голосове повідомлення!");
+//     } catch (error) {
+//         console.error("Помилка створення аудіо:", error);
+//     }
+// }
 
 //переклад войсу в текст
 // bot.on('voice', async (msg) => {
