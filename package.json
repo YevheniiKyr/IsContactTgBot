@@ -2,7 +2,7 @@
   "name": "is_contact_tg_bot",
   "version": "1.0.0",
   "engines": {
-    "node": "20.x"
+    "node": "20.11.0"
   },
   "scripts": {
     "build": "rimraf dist && npx tsc",
