@@ -1,7 +1,9 @@
 {
   "name": "is_contact_tg_bot",
   "version": "1.0.0",
-  "main": "rules.txt",
+  "engines": {
+    "node": "20.x"
+  }
   "scripts": {
     "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
